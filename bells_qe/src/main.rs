@@ -4,7 +4,7 @@ use core::num::FromPrimitive;
 use core::fmt;
 
 use Direction::{SpinUp, SpinDown, SpinSuper};
-use Plan::{Trival, OddBall};
+use Plan::{Trivial, OddBall};
 
 #[derive(Copy)]
 #[derive(Show)]
