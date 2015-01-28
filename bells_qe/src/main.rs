@@ -70,7 +70,7 @@ impl Particle {
         return Pair{lhs: p1, rhs: p2};
     }
 
-    pub fn measure (&mut self, theta: int) {
+    pub fn measure (&mut self, theta: isize) {
         // TODO theta = 60degrees use 3/4th and 1/4th
         // TODO theta = 0 SpinUp
         // TODO theta = 180 SpinDown
@@ -99,8 +99,8 @@ impl Particle {
         return Pair{lhs: self.spin, rhs: friend.spin};
     }
 
-    pub fn premeditated (&mut self, friend: &mut Particle, plan: Plan) -> Pair<Direction> {
 
+    fn get_detector_direction () -> Detector {
         let rnd = random::<f32>();
 
         let detector;
@@ -111,10 +111,16 @@ impl Particle {
         } else {
             detector = Detector::D9;
         }
+        println!("d1 {}", detector);
 
-        println!("{}", detector);
+        return detector;
+    }
 
-        
+    pub fn premeditated (&mut self, friend: &mut Particle, plan: Plan) -> Pair<Direction> {
+
+        let rnd = random::<f32>();
+
+        let detector = Particle::get_detector_direction();        
         let spin = match plan {
             Trivial => SpinUp,
             OddBall => match detector {
@@ -124,7 +130,7 @@ impl Particle {
         };
         friend.spin = spin;
 
-        
+        let detector = Particle::get_detector_direction();
         let spin = match plan {
             Trivial => SpinDown,
             OddBall => match detector {
