@@ -3,6 +3,8 @@ extern crate core;
 use core::num::FromPrimitive;
 use core::fmt;
 
+use std::rand::random;
+
 use Direction::{SpinUp, SpinDown, SpinSuper};
 use Plan::{Trivial, OddBall};
 
@@ -84,7 +86,19 @@ impl Particle {
         return Pair{lhs: self.spin, rhs: friend.spin};
     }
 
-    pub fn premeditated (&mut self, friend: &mut Particle, theta: int, plan: Plan) -> Pair<Direction> {
+    pub fn premeditated (&mut self, friend: &mut Particle, plan: Plan) -> Pair<Direction> {
+
+        let rnd = random::<f32>();
+
+        if rnd < 0.33 {
+            let direction = Detector::D12;
+        } else if rnd >= 0.33 && rnd < 0.66 {
+            let direction = Detector::D3;
+        } else {
+            let direction = Detector::D9;
+        }
+        
+
 
         // TODO: Use plan
         friend.spin = SpinUp;
