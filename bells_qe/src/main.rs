@@ -27,6 +27,18 @@ impl fmt::String for Direction {
     }
 }
 
+impl fmt::String for Detector {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use Detector::{D12, D3, D9};
+        let r = match self {
+            &D12 => "12 oclock",
+            &D3 => "3 oclock",
+            &D9 => "9 oclock"
+        };
+        write!(f, "{}", r)
+    }
+}
+
 struct Pair<T> {
     lhs: T,
     rhs: T
@@ -41,6 +53,7 @@ enum Plan {
     OddBall  // up-down-up -> down-up-down
 }
 
+#[derive(Show)]
 enum Detector {
     D12, // 12 o'clock
     D3, // 3 o'clock
@@ -90,30 +103,34 @@ impl Particle {
 
         let rnd = random::<f32>();
 
-        let direction;
-
+        let detector;
         if rnd < 0.33 {
-            direction = Detector::D12;
+            detector = Detector::D12;
         } else if rnd >= 0.33 && rnd < 0.66 {
-            direction = Detector::D3;
+            detector = Detector::D3;
         } else {
-            direction = Detector::D9;
+            detector = Detector::D9;
         }
-        
+
+        println!("{}", detector);
+
         
         let spin = match plan {
             Trivial => SpinUp,
-            OddBall => match direction {
+            OddBall => match detector {
                 Detector::D3 => SpinDown,
                 _ => SpinUp
             }
         };
         friend.spin = spin;
+
         
-        let spin = match friend.spin {
-            SpinUp => SpinDown,
-            SpinDown => SpinUp,
-            _ => panic!("broke the universe")
+        let spin = match plan {
+            Trivial => SpinDown,
+            OddBall => match detector {
+                Detector::D3 => SpinUp,
+                _ => SpinDown
+            }
         };
         self.spin = spin;
 
