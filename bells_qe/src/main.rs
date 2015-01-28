@@ -90,18 +90,25 @@ impl Particle {
 
         let rnd = random::<f32>();
 
+        let direction;
+
         if rnd < 0.33 {
-            let direction = Detector::D12;
+            direction = Detector::D12;
         } else if rnd >= 0.33 && rnd < 0.66 {
-            let direction = Detector::D3;
+            direction = Detector::D3;
         } else {
-            let direction = Detector::D9;
+            direction = Detector::D9;
         }
         
-
-
-        // TODO: Use plan
-        friend.spin = SpinUp;
+        
+        let spin = match plan {
+            Trivial => SpinUp,
+            OddBall => match direction {
+                Detector::D3 => SpinDown,
+                _ => SpinUp
+            }
+        };
+        friend.spin = spin;
         
         let spin = match friend.spin {
             SpinUp => SpinDown,
@@ -127,4 +134,14 @@ fn main () {
     println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
 
     // premeditated should give +55.6% difference, spooky would give 50%
+
+
+    let particles = Particle::new_pair();
+
+    let mut lhs = particles.lhs;
+    let mut rhs = particles.rhs;
+    lhs.premeditated(&mut rhs, OddBall);
+    println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
+
+
 }
