@@ -116,7 +116,7 @@ impl Particle {
         return detector;
     }
 
-    pub fn premeditated (&mut self, friend: &mut Particle, plan: Plan) -> Pair<Direction> {
+    pub fn hidden_information (&mut self, friend: &mut Particle, plan: Plan) -> Pair<Direction> {
 
         let rnd = random::<f32>();
 
@@ -156,14 +156,14 @@ fn main () {
 
     println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
 
-    // premeditated should give +55.6% difference, spooky would give 50%
+    // hidden_information should give +55.6% difference, spooky would give 50%
 
 
     let particles = Particle::new_pair();
 
     let mut lhs = particles.lhs;
     let mut rhs = particles.rhs;
-    lhs.premeditated(&mut rhs, OddBall);
+    lhs.hidden_information(&mut rhs, OddBall);
     println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
 
 
