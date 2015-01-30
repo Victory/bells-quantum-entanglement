@@ -10,6 +10,7 @@ use Plan::{Trivial, OddBall};
 
 #[derive(Copy)]
 #[derive(Show)]
+#[derive(PartialEq)]
 enum Direction {
     SpinUp,
     SpinDown,
@@ -111,7 +112,7 @@ impl Particle {
         } else {
             detector = Detector::D9;
         }
-        println!("d1 {}", detector);
+        //println!("d1 {}", detector);
 
         return detector;
     }
@@ -159,12 +160,23 @@ fn main () {
     // hidden_information should give +55.6% difference, spooky would give 50%
 
 
-    let particles = Particle::new_pair();
 
-    let mut lhs = particles.lhs;
-    let mut rhs = particles.rhs;
-    lhs.hidden_information(&mut rhs, OddBall);
-    println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
+    let mut trials: f64 = 1000f64;
+    let mut num_different: f64 = 0f64;
+
+    for _ in range(0, trials as usize) {
+        let particles = Particle::new_pair();
+        let mut lhs = particles.lhs;
+        let mut rhs = particles.rhs;
+        lhs.hidden_information(&mut rhs, OddBall);
+        
+        //println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
+        if lhs.spin != rhs.spin {
+            num_different += 1.0;
+        }
+    }
+
+    println!("num_different {}%", 100f64 * (trials - num_different) / trials as f64);
 
 
 }
