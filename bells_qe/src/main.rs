@@ -104,15 +104,12 @@ impl Particle {
     fn get_detector_direction () -> Detector {
         let rnd = random::<f32>();
 
-        let detector;
-        if rnd < 0.33 {
-            detector = Detector::D12;
-        } else if rnd >= 0.33 && rnd < 0.66 {
-            detector = Detector::D3;
-        } else {
-            detector = Detector::D9;
-        }
-        //println!("d1 {}", detector);
+        let detector = match rnd {
+            0.0  ... 0.33 => Detector::D12,
+            0.33 ... 0.66 => Detector::D3,
+            0.66 ... 1.00 => Detector::D9,
+            _ => unreachable!()
+        };
 
         return detector;
     }
