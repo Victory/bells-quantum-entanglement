@@ -71,10 +71,25 @@ impl Particle {
         return Pair{lhs: p1, rhs: p2};
     }
 
-    pub fn measure (&mut self, theta: isize) {
+    pub fn measure (&mut self) {
         // TODO theta = 60degrees use 3/4th and 1/4th
-        // TODO theta = 0 SpinUp
-        // TODO theta = 180 SpinDown
+
+        let detector = Particle::get_detector_direction();
+        let rnd = random::<f32>();
+
+        self.spin = match detector {
+            Detector::D12 => SpinDown,
+            Detector::D3 => match rnd {
+                0.0  ... 0.33 => SpinUp,
+                0.33 ... 1.00 => SpinDown,
+                _ => unreachable!()
+            },
+            Detector::D9 => match rnd {
+                0.0  ... 0.33 => SpinDown,
+                0.33 ... 1.00 => SpinUp,
+                _ => unreachable!()
+            },
+        };
     }
 
     // NOTE on spooky and premeditated only if measured in the same
@@ -145,19 +160,21 @@ impl Particle {
 
 fn main () {
 
+
+    let mut particle = Particle{spin: SpinSuper};
+    particle.measure();
+    println!("particle {}", particle.spin);
+
+
     let particles = Particle::new_pair();
 
     let mut lhs = particles.lhs;
     let mut rhs = particles.rhs;
 
     lhs.spooky(&mut rhs);
-
     println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
 
     // hidden_information should give +55.6% difference, spooky would give 50%
-
-
-
     let mut trials: f64 = 1000f64;
     let mut num_different: f64 = 0f64;
 
