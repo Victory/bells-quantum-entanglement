@@ -98,20 +98,12 @@ impl Particle {
     // measure with with a message
     pub fn spooky (&mut self, friend: &mut Particle) -> Pair<Direction> {
 
-        let spin = match self.spin {
-            SpinUp => SpinDown,
-            SpinDown => SpinUp,
-            SpinSuper => SpinUp
-        };
-        friend.spin = spin;
-
-        let spin = match friend.spin {
+        self.measure();
+        friend.spin = match self.spin {
             SpinUp => SpinDown,
             SpinDown => SpinUp,
             _ => panic!("broke the universe")
         };
-        self.spin = spin;
-
         return Pair{lhs: self.spin, rhs: friend.spin};
     }
 
@@ -158,6 +150,7 @@ impl Particle {
 }
 
 
+// hidden_information should give +55.6% difference, spooky would give 50%
 fn main () {
 
 
@@ -166,22 +159,37 @@ fn main () {
     println!("particle {}", particle.spin);
 
 
-    let particles = Particle::new_pair();
-
-    let mut lhs = particles.lhs;
-    let mut rhs = particles.rhs;
-
-    lhs.spooky(&mut rhs);
-    println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
-
-    // hidden_information should give +55.6% difference, spooky would give 50%
     let mut trials: f64 = 1000f64;
     let mut num_different: f64 = 0f64;
 
+    let particles = Particle::new_pair();
+    let mut lhs = particles.lhs;
+    let mut rhs = particles.rhs;
+    
+    for _ in range(0, trials as usize) {   
+        let particles = Particle::new_pair();
+        lhs = particles.lhs;
+        rhs = particles.rhs;
+
+        lhs.spooky(&mut rhs);
+
+        if lhs.spin != rhs.spin {
+            num_different += 1.0;
+        }
+    }
+
+    println!("lhs.spin {}, rhs.spin {} num_different {}", lhs.spin, rhs.spin, num_different);
+
+    println!("num_different {}%", 100f64 * (trials - num_different) / trials as f64);
+
+
+    trials = 1000f64;
+    num_different = 0f64;
+
     for _ in range(0, trials as usize) {
         let particles = Particle::new_pair();
-        let mut lhs = particles.lhs;
-        let mut rhs = particles.rhs;
+        lhs = particles.lhs;
+        rhs = particles.rhs;
         lhs.hidden_information(&mut rhs, OddBall);
         
         //println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
@@ -190,7 +198,7 @@ fn main () {
         }
     }
 
-    println!("num_different {}%", 100f64 * (trials - num_different) / trials as f64);
+    println!("Percent the same {}%", 100f64 * (trials - num_different) / trials as f64);
 
 
 }
