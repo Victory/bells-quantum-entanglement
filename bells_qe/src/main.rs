@@ -178,10 +178,9 @@ fn main () {
         }
     }
 
-    println!("lhs.spin {}, rhs.spin {} num_different {}", lhs.spin, rhs.spin, num_different);
 
-    println!("num_different {}%", 100f64 * (trials - num_different) / trials as f64);
-
+    println!("Percent different for spooky {}%", 100f64 * (num_different) / trials as f64);
+    println!("      Should be about 1/2 or 50%");
 
     trials = 1000f64;
     num_different = 0f64;
@@ -198,7 +197,7 @@ fn main () {
         }
     }
 
-    println!("Percent the same {}%", 100f64 * (num_different) / trials as f64);
-    println!("Should be about 5/9th or {}%", 100.0 * 5.0/9.0);
+    println!("Percent different for hidden info {}%", 100f64 * (num_different) / trials as f64);
+    println!("         Should be about 5/9th or {}%", 100.0 * 5.0/9.0);
 
 }
