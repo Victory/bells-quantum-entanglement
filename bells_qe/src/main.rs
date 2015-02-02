@@ -198,7 +198,7 @@ fn main () {
         }
     }
 
-    println!("Percent the same {}%", 100f64 * (trials - num_different) / trials as f64);
-
+    println!("Percent the same {}%", 100f64 * (num_different) / trials as f64);
+    println!("Should be about 5/9th or {}%", 100.0 * 5.0/9.0);
 
 }
