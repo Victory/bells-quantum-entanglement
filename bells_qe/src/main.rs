@@ -117,9 +117,9 @@ impl Particle {
         let rnd = random::<f32>();
 
         let detector = match rnd {
-            0.0  ... 0.33 => Detector::D12,
-            0.33 ... 0.66 => Detector::D3,
-            0.66 ... 1.00 => Detector::D9,
+            0.0       ... 0.3333333 => Detector::D12,
+            0.3333333 ... 0.6666666 => Detector::D3,
+            0.6666666 ... 1.00 => Detector::D9,
             _ => unreachable!()
         };
 
