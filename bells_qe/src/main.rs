@@ -94,7 +94,7 @@ impl Particle {
     // measure with with a message
     pub fn spooky (&mut self, friend: &mut Particle) -> Pair<Direction> {
 
-        let detector1 = Detector::D12; //Particle::get_detector_direction();
+        let detector1 = Detector::D12;
         let detector2 = Particle::get_detector_direction();
 
         self.measure (&detector1);
@@ -154,11 +154,10 @@ impl Particle {
     }
 }
 
-
-// hidden_information should give +55.6% difference, spooky would give 50%
-fn main () {
-
-    let mut trials: f64 = 1000000f64;
+/**
+ * run spooky for trials number of trials
+ */
+fn run_spooky (trials: f64) {
     let mut num_different: f64 = 0f64;
 
     let particles = Particle::new_pair();
@@ -180,8 +179,18 @@ fn main () {
 
     println!("Percent different for spooky {}%", 100f64 * (num_different) / trials as f64);
     println!("      Should be about 1/2 or 50%");
+}
 
-    num_different = 0f64;
+/**
+ * Run test for hidden information, set the plan_probability to choose
+ * OddBall vs Trivial
+ */ 
+fn run_hidden(trials: f64, plan_probability: f64) {
+
+    let mut num_different = 0f64;
+    let particles = Particle::new_pair();
+    let mut lhs = particles.lhs;
+    let mut rhs = particles.rhs;
 
     for _ in range(0, trials as usize) {
         let particles = Particle::new_pair();
@@ -203,4 +212,14 @@ fn main () {
     println!("Percent different for hidden info {}%", 100f64 * (num_different) / trials as f64);
     println!("  Should be greater than 5/9th or {}%", 100.0 * 5.0/9.0);
 
+}
+
+
+// hidden_information should give +55.6% difference, spooky would give 50%
+fn main () {
+
+    let mut trials: f64 = 1000000f64;
+
+    run_spooky(trials);
+    run_hidden(trials, 0.5);
 }
