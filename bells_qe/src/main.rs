@@ -55,6 +55,7 @@ enum Plan {
 }
 
 #[derive(Show)]
+#[derive(PartialEq)]
 enum Detector {
     D12, // 12 o'clock
     D3, // 3 o'clock
@@ -71,22 +72,17 @@ impl Particle {
         return Pair{lhs: p1, rhs: p2};
     }
 
-    pub fn measure (&mut self) {
-        // TODO theta = 60degrees use 3/4th and 1/4th
-
-        let detector = Particle::get_detector_direction();
-        let rnd = random::<f32>();
-
+    pub fn measure (&mut self, detector: &Detector) {
         self.spin = match detector {
-            Detector::D12 => SpinDown,
-            Detector::D3 => match rnd {
-                0.0  ... 0.33 => SpinUp,
-                0.33 ... 1.00 => SpinDown,
+            &Detector::D12 => SpinUp,
+            &Detector::D3 => match random::<f32>() {
+                0.0  ... 0.25 => SpinDown,
+                0.25 ... 1.00 => SpinUp,
                 _ => unreachable!()
             },
-            Detector::D9 => match rnd {
-                0.0  ... 0.33 => SpinDown,
-                0.33 ... 1.00 => SpinUp,
+            &Detector::D9 => match random::<f32>() {
+                0.0  ... 0.25 => SpinDown,
+                0.25 ... 1.00 => SpinUp,
                 _ => unreachable!()
             },
         };
@@ -98,12 +94,21 @@ impl Particle {
     // measure with with a message
     pub fn spooky (&mut self, friend: &mut Particle) -> Pair<Direction> {
 
-        self.measure();
-        friend.spin = match self.spin {
-            SpinUp => SpinDown,
-            SpinDown => SpinUp,
-            _ => panic!("broke the universe")
-        };
+        let detector1 = Detector::D12; //Particle::get_detector_direction();
+        let detector2 = Particle::get_detector_direction();
+
+        self.measure (&detector1);
+        
+        if detector1 == detector2 { // 1/3 
+            friend.spin = match self.spin {
+                SpinUp => SpinDown,
+                SpinDown => SpinUp,
+                _ => unreachable!()
+            };
+        } else { // 2/3
+            friend.measure(&detector2);
+        }
+
         return Pair{lhs: self.spin, rhs: friend.spin};
     }
 
@@ -153,13 +158,7 @@ impl Particle {
 // hidden_information should give +55.6% difference, spooky would give 50%
 fn main () {
 
-
-    let mut particle = Particle{spin: SpinSuper};
-    particle.measure();
-    println!("particle {}", particle.spin);
-
-
-    let mut trials: f64 = 1000f64;
+    let mut trials: f64 = 1000000f64;
     let mut num_different: f64 = 0f64;
 
     let particles = Particle::new_pair();
@@ -182,14 +181,18 @@ fn main () {
     println!("Percent different for spooky {}%", 100f64 * (num_different) / trials as f64);
     println!("      Should be about 1/2 or 50%");
 
-    trials = 1000f64;
     num_different = 0f64;
 
     for _ in range(0, trials as usize) {
         let particles = Particle::new_pair();
         lhs = particles.lhs;
         rhs = particles.rhs;
-        lhs.hidden_information(&mut rhs, OddBall);
+
+        if random::<f32>() < 0.50 {
+            lhs.hidden_information(&mut rhs, OddBall);
+        } else {
+            lhs.hidden_information(&mut rhs, Trivial);
+        }
         
         //println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
         if lhs.spin != rhs.spin {
@@ -198,6 +201,6 @@ fn main () {
     }
 
     println!("Percent different for hidden info {}%", 100f64 * (num_different) / trials as f64);
-    println!("         Should be about 5/9th or {}%", 100.0 * 5.0/9.0);
+    println!("  Should be greater than 5/9th or {}%", 100.0 * 5.0/9.0);
 
 }
