@@ -185,7 +185,7 @@ fn run_spooky (trials: f64) {
  * Run test for hidden information, set the plan_probability to choose
  * OddBall vs Trivial
  */ 
-fn run_hidden(trials: f64, plan_probability: f64) {
+fn run_hidden(trials: f64, plan_probability: f32) {
 
     let mut num_different = 0f64;
     let particles = Particle::new_pair();
@@ -197,7 +197,7 @@ fn run_hidden(trials: f64, plan_probability: f64) {
         lhs = particles.lhs;
         rhs = particles.rhs;
 
-        if random::<f32>() < 0.50 {
+        if random::<f32>() < plan_probability {
             lhs.hidden_information(&mut rhs, OddBall);
         } else {
             lhs.hidden_information(&mut rhs, Trivial);
@@ -211,6 +211,9 @@ fn run_hidden(trials: f64, plan_probability: f64) {
 
     println!("Percent different for hidden info {}%", 100f64 * (num_different) / trials as f64);
     println!("  Should be greater than 5/9th or {}%", 100.0 * 5.0/9.0);
+    println!("With OddBall choosen {}% of the time and Trivial {}% of the time", 
+             100.0 * plan_probability, 
+             100.0 * (1.0 - plan_probability));
 
 }
 
@@ -222,4 +225,6 @@ fn main () {
 
     run_spooky(trials);
     run_hidden(trials, 0.5);
+    run_hidden(trials, 1.0);
+    run_hidden(trials, 0.0);
 }
