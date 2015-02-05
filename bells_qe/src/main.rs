@@ -1,6 +1,8 @@
-extern crate core;
-
-use core::fmt;
+#![feature(core)]
+#![feature(rand)]
+/**
+ * Simulate Bell's quantum entanglement experiments
+ */
 
 use std::rand::random;
 
@@ -9,7 +11,7 @@ use Plan::{Trivial, OddBall};
 
 
 #[derive(Copy)]
-#[derive(Show)]
+#[derive(Debug)]
 #[derive(PartialEq)]
 enum Direction {
     SpinUp,
@@ -17,6 +19,7 @@ enum Direction {
     SpinSuper,
 }
 
+/*
 impl fmt::String for Direction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let r = match self {
@@ -39,6 +42,7 @@ impl fmt::String for Detector {
         write!(f, "{}", r)
     }
 }
+*/
 
 struct Pair<T> {
     lhs: T,
@@ -54,7 +58,7 @@ enum Plan {
     OddBall  // up-down-up -> down-up-down
 }
 
-#[derive(Show)]
+#[derive(Debug)]
 #[derive(PartialEq)]
 enum Detector {
     D12, // 12 o'clock
@@ -150,6 +154,9 @@ impl Particle {
         return Pair{lhs: self.spin, rhs: friend.spin};
     }
 }
+
+
+
 
 fn rand32 () -> f32 {
     return random::<f32>();
