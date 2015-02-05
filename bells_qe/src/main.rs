@@ -1,12 +1,12 @@
 extern crate core;
 
-use core::num::FromPrimitive;
 use core::fmt;
 
 use std::rand::random;
 
 use Direction::{SpinUp, SpinDown, SpinSuper};
 use Plan::{Trivial, OddBall};
+
 
 #[derive(Copy)]
 #[derive(Show)]
@@ -75,12 +75,12 @@ impl Particle {
     pub fn measure (&mut self, detector: &Detector) {
         self.spin = match detector {
             &Detector::D12 => SpinUp,
-            &Detector::D3 => match random::<f32>() {
+            &Detector::D3 => match rand32() {
                 0.0  ... 0.25 => SpinDown,
                 0.25 ... 1.00 => SpinUp,
                 _ => unreachable!()
             },
-            &Detector::D9 => match random::<f32>() {
+            &Detector::D9 => match rand32() {
                 0.0  ... 0.25 => SpinDown,
                 0.25 ... 1.00 => SpinUp,
                 _ => unreachable!()
@@ -114,9 +114,8 @@ impl Particle {
 
 
     fn get_detector_direction () -> Detector {
-        let rnd = random::<f32>();
 
-        let detector = match rnd {
+        let detector = match rand32() {
             0.0       ... 0.3333333 => Detector::D12,
             0.3333333 ... 0.6666666 => Detector::D3,
             0.6666666 ... 1.00 => Detector::D9,
@@ -127,8 +126,6 @@ impl Particle {
     }
 
     pub fn hidden_information (&mut self, friend: &mut Particle, plan: Plan) -> Pair<Direction> {
-
-        let rnd = random::<f32>();
 
         let detector = Particle::get_detector_direction();        
         let spin = match plan {
@@ -154,17 +151,20 @@ impl Particle {
     }
 }
 
+fn rand32 () -> f32 {
+    return random::<f32>();
+}
+
 /**
  * run spooky for trials number of trials
  */
 fn run_spooky (trials: f64) {
     let mut num_different: f64 = 0f64;
 
-    let particles = Particle::new_pair();
-    let mut lhs = particles.lhs;
-    let mut rhs = particles.rhs;
+    let mut lhs;
+    let mut rhs;
     
-    for _ in range(0, trials as usize) {   
+    for _ in 0 .. trials as usize {   
         let particles = Particle::new_pair();
         lhs = particles.lhs;
         rhs = particles.rhs;
@@ -188,16 +188,15 @@ fn run_spooky (trials: f64) {
 fn run_hidden(trials: f64, plan_probability: f32) {
 
     let mut num_different = 0f64;
-    let particles = Particle::new_pair();
-    let mut lhs = particles.lhs;
-    let mut rhs = particles.rhs;
+    let mut lhs;
+    let mut rhs;
 
-    for _ in range(0, trials as usize) {
+    for _ in 0 .. trials as usize {
         let particles = Particle::new_pair();
         lhs = particles.lhs;
         rhs = particles.rhs;
 
-        if random::<f32>() < plan_probability {
+        if rand32() < plan_probability {
             lhs.hidden_information(&mut rhs, OddBall);
         } else {
             lhs.hidden_information(&mut rhs, Trivial);
@@ -221,7 +220,7 @@ fn run_hidden(trials: f64, plan_probability: f32) {
 // hidden_information should give +55.6% difference, spooky would give 50%
 fn main () {
 
-    let mut trials: f64 = 1000000f64;
+    let trials: f64 = 1000000f64;
 
     run_spooky(trials);
     run_hidden(trials, 0.5);
