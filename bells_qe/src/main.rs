@@ -11,9 +11,7 @@ use Direction::{SpinUp, SpinDown, SpinSuper};
 use Plan::{Trivial, OddBall};
 
 
-#[derive(Copy)]
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Copy, Debug, PartialEq)]
 enum Direction {
     SpinUp,
     SpinDown,
@@ -59,8 +57,7 @@ enum Plan {
     OddBall  // up-down-up -> down-up-down
 }
 
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 enum Detector {
     D12, // 12 o'clock
     D3, // 3 o'clock
