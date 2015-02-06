@@ -4,6 +4,8 @@
  * Simulate Bell's quantum entanglement experiments
  */
 
+extern crate test;
+
 use std::rand::random;
 use std::fmt;
 
@@ -231,4 +233,23 @@ fn main () {
     run_hidden(trials, 0.5);
     run_hidden(trials, 1.0);
     run_hidden(trials, 0.0);
+}
+
+#[bench]
+fn run_linear (b: &mut test::Bencher) {
+
+    b.iter(|| {
+
+        let trials: f64 = 10f64;
+
+        run_spooky(trials);
+        run_hidden(trials, 0.5);
+        run_hidden(trials, 1.0);
+        run_hidden(trials, 0.0);
+
+        //range(0, BENCH_SIZE).map(fibonacci).collect::<Vec<u32>>()
+    })
+
+
+
 }
