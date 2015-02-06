@@ -5,6 +5,7 @@
  */
 
 use std::rand::random;
+use std::fmt;
 
 use Direction::{SpinUp, SpinDown, SpinSuper};
 use Plan::{Trivial, OddBall};
@@ -19,8 +20,8 @@ enum Direction {
     SpinSuper,
 }
 
-/*
-impl fmt::String for Direction {
+
+impl fmt::Display for Direction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let r = match self {
             &SpinUp => "SpinUp",
@@ -31,7 +32,7 @@ impl fmt::String for Direction {
     }
 }
 
-impl fmt::String for Detector {
+impl fmt::Display for Detector {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use Detector::{D12, D3, D9};
         let r = match self {
@@ -42,7 +43,7 @@ impl fmt::String for Detector {
         write!(f, "{}", r)
     }
 }
-*/
+
 
 struct Pair<T> {
     lhs: T,
