@@ -3,4 +3,4 @@ language: rust
 rust:
   - nightly
 
-script: cargo bench && cargo test
+script: cd bells_qe && cargo bench && cargo test
