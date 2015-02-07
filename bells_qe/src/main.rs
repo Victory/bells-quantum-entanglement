@@ -6,6 +6,7 @@
 
 extern crate test;
 
+
 use std::thread::Thread;
 use std::rand::random;
 use std::fmt;
@@ -251,15 +252,58 @@ fn main () {
     run_hidden(trials, 0.0);
 }
 
+
+
+
+static BENCH_ITTERS: f64 = 10000f64;
+
 #[bench]
-fn run_linear (b: &mut test::Bencher) {
+fn bench_one_spooky (b: &mut test::Bencher) {
     b.iter(|| {
-        let trials: f64 = 10f64;
+        let trials: f64 = BENCH_ITTERS;
+        get_spooky(trials);
+    });
+}
+
+#[bench]
+fn bench_one_hidden (b: &mut test::Bencher) {
+    b.iter(|| {
+        let trials: f64 = BENCH_ITTERS;
+        get_hidden(trials, 0.5);
+    });
+}
+
+#[bench]
+fn bench_many_linear (b: &mut test::Bencher) {
+    b.iter(|| {
+        let trials: f64 = BENCH_ITTERS;
 
         get_spooky(trials);
         get_hidden(trials, 0.5);
         get_hidden(trials, 1.0);
         get_hidden(trials, 0.0);
+    })
+}
+
+#[bench]
+fn bench_many_threads (b: &mut test::Bencher) {
+    b.iter(|| {
+        let trials: f64 = BENCH_ITTERS;
+
+        Thread::spawn(move || {
+            get_spooky(trials);
+        });
+        Thread::spawn(move || {
+            get_hidden(trials, 0.5);
+        });
+        Thread::spawn(move || {
+            get_hidden(trials, 1.0);
+        });
+        Thread::spawn(move || {
+            get_hidden(trials, 0.0);
+        });
+
+        
     })
 }
 
