@@ -6,6 +6,7 @@
 
 extern crate test;
 
+use std::thread::Thread;
 use std::rand::random;
 use std::fmt;
 
@@ -165,8 +166,8 @@ fn rand32 () -> f32 {
 /**
  * run spooky for trials number of trials
  */
-fn run_spooky (trials: f64) {
-    let mut num_different: f64 = 0f64;
+fn get_spooky (trials: f64) -> usize {
+    let mut num_different = 0;
 
     let mut lhs;
     let mut rhs;
@@ -179,22 +180,31 @@ fn run_spooky (trials: f64) {
         lhs.spooky(&mut rhs);
 
         if lhs.spin != rhs.spin {
-            num_different += 1.0;
+            num_different += 1;
         }
     }
 
+    return num_different;
+}
+
+fn run_spooky (trials: f64) {
+    
+    let num_different = get_spooky(trials) as f64;
 
     println!("Percent different for spooky {}%", 100f64 * (num_different) / trials as f64);
     println!("      Should be about 1/2 or 50%");
+
 }
+
+
 
 /**
  * Run test for hidden information, set the plan_probability to choose
  * OddBall vs Trivial
  */ 
-fn run_hidden(trials: f64, plan_probability: f32) {
+fn get_hidden(trials: f64, plan_probability: f32) -> usize {
 
-    let mut num_different = 0f64;
+    let mut num_different = 0;
     let mut lhs;
     let mut rhs;
 
@@ -208,12 +218,18 @@ fn run_hidden(trials: f64, plan_probability: f32) {
         } else {
             lhs.hidden_information(&mut rhs, Trivial);
         }
-        
-        //println!("lhs.spin {}, rhs.spin {}", lhs.spin, rhs.spin);
+
         if lhs.spin != rhs.spin {
-            num_different += 1.0;
+            num_different += 1;
         }
     }
+
+    return num_different;
+}
+
+fn run_hidden (trials: f64, plan_probability: f32) {
+
+    let num_different = get_hidden(trials, plan_probability) as f64;
 
     println!("Percent different for hidden info {}%", 100f64 * (num_different) / trials as f64);
     println!("  Should be greater than 5/9th or {}%", 100.0 * 5.0/9.0);
@@ -237,19 +253,13 @@ fn main () {
 
 #[bench]
 fn run_linear (b: &mut test::Bencher) {
-
     b.iter(|| {
-
         let trials: f64 = 10f64;
 
-        run_spooky(trials);
-        run_hidden(trials, 0.5);
-        run_hidden(trials, 1.0);
-        run_hidden(trials, 0.0);
-
-        //range(0, BENCH_SIZE).map(fibonacci).collect::<Vec<u32>>()
+        get_spooky(trials);
+        get_hidden(trials, 0.5);
+        get_hidden(trials, 1.0);
+        get_hidden(trials, 0.0);
     })
-
-
-
 }
+
