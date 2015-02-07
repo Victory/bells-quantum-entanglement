@@ -12,4 +12,3 @@ fn main () {
     run_hidden(trials, 1.0);
     run_hidden(trials, 0.0);
 }
-

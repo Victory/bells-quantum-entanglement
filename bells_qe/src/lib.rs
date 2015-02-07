@@ -164,7 +164,7 @@ fn rand32 () -> f32 {
 /**
  * run spooky for trials number of trials
  */
-fn get_spooky (trials: f64) -> usize {
+pub fn get_spooky (trials: f64) -> usize {
     let mut num_different = 0;
 
     let mut lhs;
@@ -200,7 +200,7 @@ pub fn run_spooky (trials: f64) {
  * Run test for hidden information, set the plan_probability to choose
  * OddBall vs Trivial
  */ 
-fn get_hidden(trials: f64, plan_probability: f32) -> usize {
+pub fn get_hidden(trials: f64, plan_probability: f32) -> usize {
 
     let mut num_different = 0;
     let mut lhs;
@@ -293,3 +293,19 @@ fn bench_many_threads (b: &mut test::Bencher) {
     })
 }
 
+#[test]
+fn spooky_is_nearly_fiftyfifty () {
+    let trials: f64 = 1000f64;
+    let num_different = get_spooky(trials);
+    let in_range = num_different > 450 && num_different < 550;
+    assert!(in_range);
+}
+
+
+#[test]
+fn hidden_is_nearly_more_fiftyfifty () {
+    let trials: f64 = 1000f64;
+    let num_different = get_hidden(trials, 0.0);
+    let in_range = num_different > 550;
+    assert!(in_range);
+}
