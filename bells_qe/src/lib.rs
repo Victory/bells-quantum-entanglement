@@ -304,8 +304,19 @@ fn spooky_is_nearly_fiftyfifty () {
 
 #[test]
 fn hidden_is_nearly_more_fiftyfifty () {
-    let trials: f64 = 1000f64;
+    let trials: f64 = 100000f64;
+
     let num_different = get_hidden(trials, 0.0);
-    let in_range = num_different > 550;
+    let in_range = num_different > 55000;
+    assert!(in_range);
+
+
+    let num_different = get_hidden(trials, 5.0);
+    let in_range = num_different > 55000;
+    assert!(in_range);
+
+
+    let num_different = get_hidden(trials, 1.0);
+    let in_range = num_different > 55000;
     assert!(in_range);
 }

@@ -8,7 +8,7 @@ fn main () {
     let trials: f64 = 1000000f64;
 
     run_spooky(trials);
-    run_hidden(trials, 0.5);
     run_hidden(trials, 1.0);
+    run_hidden(trials, 0.5);
     run_hidden(trials, 0.0);
 }
