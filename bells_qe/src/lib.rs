@@ -91,7 +91,7 @@ impl Particle {
         };
     }
 
-    // NOTE on spooky and premeditated only if measured in the same
+    // NOTE: in either spooky or hidden only if measured in the same
     // direction must the spins be opposite
 
     // measure with with a message

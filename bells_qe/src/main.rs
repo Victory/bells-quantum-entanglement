@@ -7,6 +7,8 @@ fn main () {
 
     let trials: f64 = 1000000f64;
 
+    println!("Running {} trials", trials);
+
     run_spooky(trials);
     run_hidden(trials, 1.0);
     run_hidden(trials, 0.5);
